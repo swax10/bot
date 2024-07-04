@@ -19,15 +19,17 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        working-directory: root/docs  # Specify the working directory
         run: npm ci
       - name: Build website
+        working-directory: root/docs  # Specify the working directory
         run: npm run build
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2
         with:
           name: built-website
-          path: build
+          path: root/docs/build
 
   deploy:
     name: Deploy to GitHub Pages
@@ -38,9 +40,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: built-website
-          path: build
+          path: root/docs/build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./root/docs/build
