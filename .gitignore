@@ -1,0 +1,5 @@
+*.lock
+dataset
+anayaOld
+.e*
+_*
