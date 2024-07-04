@@ -1,48 +1,26 @@
-name: Deploy to GitHub Pages
+name: Deploy Docs
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  build:
-    name: Build Docusaurus
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: npm
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Install dependencies
-        working-directory: root/docs  # Specify the working directory
-        run: npm ci
-      - name: Build website
-        working-directory: root/docs  # Specify the working directory
+        run: npm install
+
+      - name: Build
         run: npm run build
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: built-website
-          path: root/docs/build
-
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: built-website
-          path: root/docs/build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./root/docs/build
+          publish_dir: ./docs/build
